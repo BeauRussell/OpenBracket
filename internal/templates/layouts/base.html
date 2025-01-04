@@ -1,0 +1,20 @@
+{{ define "base" }}
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<title>Bracket Generator</title>
+		<link rel="stylesheet" href="/static/css/styles.css">
+		<script src="https://unpkg.com/htmx.org"></script>
+	</head>
+	<body>
+		<div class="container">
+			<h1>Bracket Generator</h1>
+			<main>
+				{{ template "content" . }}
+			</main>
+		</div>
+	</body>
+</html>
+{{ end }}

@@ -1,0 +1,27 @@
+{{ define "content" }}
+<div>
+	<form hx-get="/generate-bracket" hx-target="#bracket-container" hx-swap="innerHTML">
+		<label for="num_matches">Number of Matches:</label>
+		<input type="number" id="num_matches" name="num_matches" min="1" required>
+		<button type="submit">Generate Bracket</button>
+	</form>
+</div>
+
+<div id="bracket-container"></div>
+{{ end }}
+
+{{ define "bracket" }}
+<div class="bracket">
+    {{ range . }}
+    <div class="round">
+        {{ range .Matches }}
+        <div class="match">
+            <div class="match-content">{{ .Name }}</div>
+            <div class="connector top"></div>
+            <div class="connector bottom"></div>
+        </div>
+        {{ end }}
+    </div>
+    {{ end }}
+</div>
+{{ end }}
