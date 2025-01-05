@@ -1,0 +1,15 @@
+{{ define "navbar" }}
+<nav class="bg-gray-200 dark:bg-gray-800 px-4 py-2 shadow-md flex justify-between">
+	<ul class="flex space-x-4">
+		<li><a href="/" class="hover:text-blue-500">Home</a></li>
+	</ul>
+	<button
+		class="px-4 py-2 text-white rounded"
+		onclick="document.documentElement.classList.toggle('dark'); localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';"
+	>
+		<svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" viewBox="0 0 25 25" class="fill-current text-gray-800 dark:text-gray-100">
+			<path d="M19.05 17.98A12.035 12.035 0 0 1 7.02 5.95 11.821 11.821 0 0 1 8.09 1 12.03 12.03 0 1 0 24 16.91a11.821 11.821 0 0 1-4.95 1.07z"/>
+		</svg>
+	</button>
+</nav>
+{{ end }}

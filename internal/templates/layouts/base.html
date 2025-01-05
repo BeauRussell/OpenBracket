@@ -4,17 +4,35 @@
 	<head>
 		<meta charset="UTF-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<title>Bracket Generator</title>
+		<title>Open Bracket</title>
 		<link rel="stylesheet" href="/static/css/output.css">
 		<script src="https://unpkg.com/htmx.org"></script>
 	</head>
-	<body>
+	<body class="bg-background text-text">
+		{{ template "navbar" . }}
 		<div class="container">
-			<h1>Bracket Generator</h1>
 			<main>
 				{{ template "content" . }}
 			</main>
 		</div>
 	</body>
+
+<script>
+  // Apply saved theme or default to system preference
+  const savedTheme = localStorage.getItem('theme');
+  const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+  if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+    document.documentElement.classList.add('dark');
+  } else {
+    document.documentElement.classList.remove('dark');
+  }
+
+  // Function to toggle theme and save to localStorage
+  function toggleTheme() {
+    const isDarkMode = document.documentElement.classList.toggle('dark');
+    localStorage.setItem('theme', isDarkMode ? 'dark' : 'light');
+  }
+</script>
 </html>
 {{ end }}

@@ -4,10 +4,15 @@ module.exports = {
 		"./internal/templates/**/*.html",
 		"./static/**/*.js"
 	],
+	darkMode: 'class',
 	theme: {
 		extend: {
-			height: {
-				'128': '32rem',
+			colors: {
+				background: 'var(--color-background)',
+				text: 'var(--color-text)',
+				card: 'var(--color-card)',
+				primary: 'var(--color-primary)',
+				secondary: 'var(--color-secondary)',
 			},
 		},
 	},
