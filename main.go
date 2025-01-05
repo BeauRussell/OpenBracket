@@ -31,12 +31,31 @@ func main() {
 }
 
 func renderBracketForm(w http.ResponseWriter, r *http.Request) {
-	tmpl := template.Must(template.ParseFiles("internal/templates/layouts/base.html", "internal/templates/bracket.html"))
+	// Define custom template functions
+	funcMap := template.FuncMap{
+		"len": func(slice []Match) int {
+			return len(slice)
+		},
+		"sub": func(a, b int) int {
+			return a - b
+		},
+		"mod": func(a, b int) int {
+			return a % b
+		},
+	}
+
+	// Create a new template, add functions, and parse files
+	tmpl := template.New("base").Funcs(funcMap)
+	tmpl = template.Must(tmpl.ParseFiles(
+		"internal/templates/layouts/base.html",
+		"internal/templates/bracket.html",
+	))
+
+	// Execute the "base" template
 	err := tmpl.ExecuteTemplate(w, "base", nil)
 	if err != nil {
 		log.Printf("Error executing template: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
 	}
 }
 
@@ -48,7 +67,7 @@ func generateBracket(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Generate rounds
+	// Generate matches and rounds
 	rounds := []Round{}
 	matches := []Match{}
 
@@ -65,8 +84,25 @@ func generateBracket(w http.ResponseWriter, r *http.Request) {
 		matches = nextRound(matches)
 	}
 
-	tmpl := template.Must(template.ParseFiles("internal/templates/bracket.html"))
-	tmpl.ExecuteTemplate(w, "bracket", rounds)
+	// Add custom functions to the template
+	tmpl := template.Must(template.New("bracket.html").Funcs(template.FuncMap{
+		"len": func(slice []Match) int {
+			return len(slice)
+		},
+		"sub": func(a, b int) int {
+			return a - b
+		},
+		"mod": func(a, b int) int {
+			return a % b
+		},
+	}).ParseFiles("internal/templates/bracket.html"))
+
+	// Render the template
+	err = tmpl.ExecuteTemplate(w, "bracket", rounds)
+	if err != nil {
+		log.Printf("Failed to execute bracket template %v\n", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 func nextRound(matches []Match) []Match {
