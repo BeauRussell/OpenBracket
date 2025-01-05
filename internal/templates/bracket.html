@@ -11,10 +11,10 @@
 {{ end }}
 
 {{ define "bracket" }}
-<div class="flex justify-center items-start gap-8 my-8">
-    {{ range $round := . }}
-    <div class="flex flex-col items-center gap-4 relative">
-        <p>Round with {{ len $round.Matches }} Matches</p>
+<div class="flex justify-center gap-8 my-8">
+    {{ range $i, $round := . }}
+    <div class="flex flex-col items-center gap-4 relative justify-center">
+        <p>Round {{ add $i 1  }}</p>
         {{ range $i, $match := $round.Matches }}
         <div class="relative flex items-center justify-center w-40 h-12 bg-gray-100 border border-gray-300 rounded shadow-md">
             <div class="text-sm font-semibold text-gray-700">{{ $match.Name }}</div>
@@ -24,11 +24,6 @@
             {{ $lastMatchIndex := sub $matchCount 1 }}
             {{ if lt $i $lastMatchIndex }}
             <div class="absolute w-0.5 h-12 bg-gray-300 top-1/2 left-full transform -translate-y-1/2"></div>
-            {{ end }}
-
-            <!-- Vertical connecting line -->
-            {{ if eq (mod $i 2) 0 }}
-            <div class="absolute w-0.5 h-24 bg-gray-300 bottom-0 left-1/2 transform -translate-x-1/2"></div>
             {{ end }}
         </div>
         {{ end }}
