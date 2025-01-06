@@ -3,14 +3,20 @@ package bracket
 import (
 	"fmt"
 	"log"
+	"math"
 	"net/http"
 	"strconv"
 	"text/template"
 )
 
-type Match struct {
-	ID   int
+type Entrant struct {
 	Name string
+}
+
+type Match struct {
+	ID       int
+	Name     string
+	Entrants [2]Entrant
 }
 
 type Round struct {
@@ -33,21 +39,34 @@ var FuncMap template.FuncMap = template.FuncMap{
 }
 
 func GenerateBracket(w http.ResponseWriter, r *http.Request) {
-	numMatchesStr := r.URL.Query().Get("num_matches")
-	numMatches, err := strconv.Atoi(numMatchesStr)
-	if err != nil || numMatches < 1 {
+	numEntrantsStr := r.URL.Query().Get("num_entrants")
+	numEntrants, err := strconv.Atoi(numEntrantsStr)
+	if err != nil || numEntrants < 2 {
 		http.Error(w, "Invalid number of matches", http.StatusBadRequest)
 		return
 	}
 
 	// Generate matches and rounds
+	entrants := []Entrant{}
 	rounds := []Round{}
 	matches := []Match{}
+
+	for i := 1; i <= numEntrants; i++ {
+		entrants = append(entrants, Entrant{
+			Name: fmt.Sprintf("Entrant %d", i),
+		})
+	}
+
+	numMatches := numMatchesRound1(numEntrants - 1)
 
 	for i := 1; i <= numMatches; i++ {
 		matches = append(matches, Match{
 			ID:   i,
 			Name: fmt.Sprintf("Match %d", i),
+			Entrants: [2]Entrant{
+				{Name: "test 1"},
+				{Name: "test 2"},
+			},
 		})
 	}
 
@@ -94,4 +113,9 @@ func nextRound(matches []Match) []Match {
 		})
 	}
 	return next
+}
+
+func numMatchesRound1(numEntrants int) int {
+	log2 := math.Log2(float64(numEntrants))
+	return int(math.Pow(2, math.Floor(log2)))
 }

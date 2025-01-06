@@ -17,3 +17,8 @@
 	--color-primary: #1e40af;
 	--color-secondary: #a0aec0;
 }
+
+input {
+	background-color: var(--color-card);
+	color: var(--color-text);
+}
