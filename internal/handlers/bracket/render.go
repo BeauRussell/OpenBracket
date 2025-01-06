@@ -5,6 +5,7 @@ import (
 	"log"
 	"math"
 	"net/http"
+	"reflect"
 	"strconv"
 	"text/template"
 )
@@ -24,9 +25,7 @@ type Round struct {
 }
 
 var FuncMap template.FuncMap = template.FuncMap{
-	"len": func(slice []Match) int {
-		return len(slice)
-	},
+	"len": GenericLen,
 	"sub": func(a, b int) int {
 		return a - b
 	},
@@ -35,6 +34,12 @@ var FuncMap template.FuncMap = template.FuncMap{
 	},
 	"mod": func(a, b int) int {
 		return a % b
+	},
+	"div": func(a, b int) int {
+		return a / b
+	},
+	"mul": func(a, b int) int {
+		return a * b
 	},
 }
 
@@ -118,4 +123,16 @@ func nextRound(matches []Match) []Match {
 func numMatchesRound1(numEntrants int) int {
 	log2 := math.Log2(float64(numEntrants))
 	return int(math.Pow(2, math.Floor(log2)))
+}
+
+func GenericLen(slice interface{}) int {
+	v := reflect.ValueOf(slice)
+
+	// Check if the input is a slice
+	if v.Kind() == reflect.Slice {
+		return v.Len()
+	}
+	// If it's not a slice, return 0 or handle error
+	fmt.Printf("Invalid type: expected slice, got %s\n", v.Kind())
+	return 0
 }
