@@ -9,8 +9,8 @@ import (
 
 var DB *sql.DB
 
-func InitDB() {
-	DB, err := sql.Open("sqlite3", "OpenBracket.db")
+func InitDB() *sql.DB {
+	DB, err := sql.Open("sqlite3", "internal/db/OpenBracket.db")
 	if err != nil {
 		log.Fatalf("Failed to connect to the database: %v", err)
 	}
@@ -18,4 +18,6 @@ func InitDB() {
 	if err = DB.Ping(); err != nil {
 		log.Fatalf("Database is not reachable: %v", err)
 	}
+
+	return DB
 }

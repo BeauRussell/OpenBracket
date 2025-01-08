@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"text/template"
 
+	"github.com/BeauRussell/OpenBracket/internal/db"
+	"github.com/BeauRussell/OpenBracket/internal/db/repositories"
+	"github.com/BeauRussell/OpenBracket/internal/services/tournament"
 	"github.com/BeauRussell/OpenBracket/pkg/templateFunctions"
 )
 
@@ -32,6 +35,12 @@ func GenerateBracket(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid number of matches", http.StatusBadRequest)
 		return
 	}
+
+	dbConn := db.InitDB()
+
+	tournamentService := tournament.NewBracketService(repositories.NewEntrantRepository(dbConn), repositories.NewTournamentRepository(dbConn))
+
+	tournamentService.GenerateTournament("Test Tournament")
 
 	// Generate matches and rounds
 	entrants := []Entrant{}
