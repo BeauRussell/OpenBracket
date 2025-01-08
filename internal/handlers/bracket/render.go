@@ -80,7 +80,6 @@ func RenderBracketForm(w http.ResponseWriter, r *http.Request) {
 	tmpl = template.Must(tmpl.ParseFiles(
 		"internal/templates/layouts/base.html",
 		"internal/templates/bracket.html",
-		"internal/templates/partials/navbar.html",
 	))
 
 	// Execute the "base" template
