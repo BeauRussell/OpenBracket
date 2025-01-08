@@ -5,9 +5,10 @@ import (
 	"log"
 	"math"
 	"net/http"
-	"reflect"
 	"strconv"
 	"text/template"
+
+	"github.com/BeauRussell/OpenBracket/pkg/templateFunctions"
 )
 
 type Entrant struct {
@@ -22,25 +23,6 @@ type Match struct {
 
 type Round struct {
 	Matches []Match
-}
-
-var FuncMap template.FuncMap = template.FuncMap{
-	"len": GenericLen,
-	"sub": func(a, b int) int {
-		return a - b
-	},
-	"add": func(a, b int) int {
-		return a + b
-	},
-	"mod": func(a, b int) int {
-		return a % b
-	},
-	"div": func(a, b int) int {
-		return a / b
-	},
-	"mul": func(a, b int) int {
-		return a * b
-	},
 }
 
 func GenerateBracket(w http.ResponseWriter, r *http.Request) {
@@ -82,7 +64,7 @@ func GenerateBracket(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Add custom functions to the template
-	tmpl := template.Must(template.New("bracket.html").Funcs(FuncMap).ParseFiles("internal/templates/bracket.html"))
+	tmpl := template.Must(template.New("bracket.html").Funcs(templateFunctions.MathOps).ParseFiles("internal/templates/bracket.html"))
 
 	// Render the template
 	err = tmpl.ExecuteTemplate(w, "bracket", rounds)
@@ -94,7 +76,7 @@ func GenerateBracket(w http.ResponseWriter, r *http.Request) {
 
 func RenderBracketForm(w http.ResponseWriter, r *http.Request) {
 	// Create a new template, add functions, and parse files
-	tmpl := template.New("base").Funcs(FuncMap)
+	tmpl := template.New("base").Funcs(templateFunctions.MathOps)
 	tmpl = template.Must(tmpl.ParseFiles(
 		"internal/templates/layouts/base.html",
 		"internal/templates/bracket.html",
@@ -123,16 +105,4 @@ func nextRound(matches []Match) []Match {
 func numMatchesRound1(numEntrants int) int {
 	log2 := math.Log2(float64(numEntrants))
 	return int(math.Pow(2, math.Floor(log2)))
-}
-
-func GenericLen(slice interface{}) int {
-	v := reflect.ValueOf(slice)
-
-	// Check if the input is a slice
-	if v.Kind() == reflect.Slice {
-		return v.Len()
-	}
-	// If it's not a slice, return 0 or handle error
-	fmt.Printf("Invalid type: expected slice, got %s\n", v.Kind())
-	return 0
 }
