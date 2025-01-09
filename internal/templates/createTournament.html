@@ -1,0 +1,9 @@
+{{ define "content" }}
+<div>
+	<form action="/create-tournament" method="POST">
+		<label for="tournament_name">Name:</label>
+		<input type="text" id="tournament_name" name="tournament_name" required>
+		<button type="submit">Create Tournament</button>
+	</form>
+</div>
+{{ end }}

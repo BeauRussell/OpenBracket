@@ -3,7 +3,8 @@ CREATE TABLE tournaments (
 	id INTEGER PRIMARY KEY AUTOINCREMENT,
 	name TEXT NOT NULL,
 	slug TEXT UNIQUE NOT NULL,
-	num_entrants INTEGER NOT NULL
+	num_entrants INTEGER NOT NULL,
+	started BOOLEAN
 );
 
 -- Create the Entrant table

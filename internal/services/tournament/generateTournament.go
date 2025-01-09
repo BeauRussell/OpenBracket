@@ -20,7 +20,7 @@ func NewBracketService(entrantRepo *repositories.EntrantRepository, tournamentRe
 	}
 }
 
-func (s *TournamentService) GenerateTournament(tournamentName string) error {
+func (s *TournamentService) GenerateTournament(tournamentName string) (error, int) {
 	tournamentStruct := models.Tournament{
 		Name: tournamentName,
 	}
@@ -28,12 +28,12 @@ func (s *TournamentService) GenerateTournament(tournamentName string) error {
 	err := s.TournamentRepo.CreateTournament(&tournamentStruct)
 	if err != nil {
 		log.Printf("Failed to create tournament: %v\n", err)
-		return err
+		return err, 0
 	}
 
 	s.Tournament = &tournamentStruct
 
-	return nil
+	return nil, tournamentStruct.ID
 }
 
 func (s *TournamentService) CreateEntrant(name string) (error, *models.Entrant) {
