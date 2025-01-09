@@ -32,9 +32,9 @@ func (r *EntrantRepository) GetEntrantById(id int) (*models.Entrant, error) {
 	return &entrant, nil
 }
 
-func (r *EntrantRepository) CreateEntrant(entrant *models.Entrant, tournament *models.Tournament) error {
+func (r *EntrantRepository) CreateEntrant(entrant *models.Entrant) error {
 	query := "INSERT INTO entrants (name, tournament_id) VALUES ($1, $2) RETURNING id"
-	err := r.DB.QueryRow(query, entrant.Name, tournament.ID).Scan(&entrant.ID)
+	err := r.DB.QueryRow(query, entrant.Name, entrant.Tournament.ID).Scan(&entrant.ID)
 	if err != nil {
 		log.Printf("Error creating entrant: %v\n", err)
 		return err

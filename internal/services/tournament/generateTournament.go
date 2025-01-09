@@ -10,6 +10,7 @@ import (
 type TournamentService struct {
 	EntrantRepo    *repositories.EntrantRepository
 	TournamentRepo *repositories.TournamentRepository
+	Tournament     *models.Tournament
 }
 
 func NewBracketService(entrantRepo *repositories.EntrantRepository, tournamentRepo *repositories.TournamentRepository) *TournamentService {
@@ -30,5 +31,21 @@ func (s *TournamentService) GenerateTournament(tournamentName string) error {
 		return err
 	}
 
+	s.Tournament = &tournamentStruct
+
 	return nil
+}
+
+func (s *TournamentService) CreateEntrant(name string) (error, *models.Entrant) {
+	entrantStruct := models.Entrant{
+		Name:       name,
+		Tournament: s.Tournament,
+	}
+	err := s.EntrantRepo.CreateEntrant(&entrantStruct)
+	if err != nil {
+		log.Printf("Failed to create entrant: %v", err)
+		return err, nil
+	}
+
+	return nil, &entrantStruct
 }

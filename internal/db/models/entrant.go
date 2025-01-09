@@ -5,5 +5,5 @@ type Entrant struct {
 	Seed       int
 	Name       string
 	Standing   int
-	Tournament Tournament
+	Tournament *Tournament
 }
