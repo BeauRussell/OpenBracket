@@ -17,7 +17,7 @@ func NewEntrantRepository(db *sql.DB) *EntrantRepository {
 }
 
 func (r *EntrantRepository) GetEntrantById(id int) (*models.Entrant, error) {
-	query := "SELECT id, name FROM entrants WHERE id = $1"
+	query := "SELECT id, name FROM entrants WHERE id = ?"
 	row := r.DB.QueryRow(query, id)
 
 	var entrant models.Entrant
@@ -33,7 +33,7 @@ func (r *EntrantRepository) GetEntrantById(id int) (*models.Entrant, error) {
 }
 
 func (r *EntrantRepository) CreateEntrant(entrant *models.Entrant) error {
-	query := "INSERT INTO entrants (name, tournament_id) VALUES ($1, $2) RETURNING id"
+	query := "INSERT INTO entrants (name, tournament_id) VALUES (?, ?) RETURNING id"
 	err := r.DB.QueryRow(query, entrant.Name, entrant.Tournament.ID).Scan(&entrant.ID)
 	if err != nil {
 		log.Printf("Error creating entrant: %v\n", err)

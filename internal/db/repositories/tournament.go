@@ -18,7 +18,7 @@ func NewTournamentRepository(db *sql.DB) *TournamentRepository {
 }
 
 func (r *TournamentRepository) GetTournamentById(id int) (*models.Tournament, error) {
-	query := "SELECT id, name, num_entrants FROM tournaments WHERE id = $1"
+	query := "SELECT id, name, num_entrants FROM tournaments WHERE id = ?"
 	row := r.DB.QueryRow(query, id)
 
 	var tournament models.Tournament
@@ -35,8 +35,7 @@ func (r *TournamentRepository) GetTournamentById(id int) (*models.Tournament, er
 
 func (r *TournamentRepository) CreateTournament(tournament *models.Tournament) error {
 	translateNameToSlug(tournament)
-	query := "INSERT INTO tournaments (name, slug, num_entrants) VALUES ($1, $2, $3) RETURNING id"
-	log.Println(query)
+	query := "INSERT INTO tournaments (name, slug, num_entrants) VALUES (?, ?, ?) RETURNING id"
 	err := r.DB.QueryRow(query, tournament.Name, tournament.Slug, tournament.NumEntrants).Scan(&tournament.ID)
 	if err != nil {
 		log.Printf("Error creating tournament: %v\n", err)
