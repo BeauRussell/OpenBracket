@@ -1,8 +1,9 @@
 {{ define "content" }}
 <div>
-	<form hx-get="/generate-bracket" hx-target="#bracket-container" hx-swap="innerHTML">
+	<form hx-post="/generate-bracket" hx-target="#bracket-container" hx-swap="innerHTML">
 		<label for="num_entrants">Number of Entrants:</label>
 		<input type="number" id="num_entrants" name="num_entrants" min="2" required>
+		<input type="hidden" name="tournament_id" value="{{ .TournamentID }}">
 		<button type="submit">Generate Bracket</button>
 	</form>
 </div>

@@ -3,7 +3,6 @@ module github.com/BeauRussell/OpenBracket
 go 1.22.10
 
 require (
-	github.com/mattn/go-sqlite3 v1.14.24
 	github.com/spf13/viper v1.19.0
 	github.com/tursodatabase/libsql-client-go v0.0.0-20240902231107-85af5b9d094d
 )

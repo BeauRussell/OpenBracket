@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/BeauRussell/OpenBracket/internal/db/models"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/tursodatabase/libsql-client-go/libsql"
 )
 
 type EntrantRepository struct {

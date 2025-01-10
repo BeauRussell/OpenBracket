@@ -1,2 +1,0 @@
-DROP TABLE IF EXISTS entrants;
-DROP TABLE IF EXISTS tournaments;

@@ -1,27 +1,21 @@
 package bracket
 
 import (
-	"fmt"
 	"log"
 	"math"
 	"net/http"
+	"strconv"
 	"text/template"
 
+	"github.com/BeauRussell/OpenBracket/internal/db"
+	"github.com/BeauRussell/OpenBracket/internal/db/models"
+	"github.com/BeauRussell/OpenBracket/internal/db/repositories"
+	"github.com/BeauRussell/OpenBracket/internal/services/match"
 	"github.com/BeauRussell/OpenBracket/pkg/templateFunctions"
 )
 
-type Entrant struct {
-	Name string
-}
-
-type Match struct {
-	ID       int
-	Name     string
-	Entrants [2]Entrant
-}
-
 type Round struct {
-	Matches []Match
+	Matches []models.Match
 }
 
 func RenderBracketForm(w http.ResponseWriter, r *http.Request) {
@@ -38,15 +32,33 @@ func RenderBracketForm(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func nextRound(matches []Match) []Match {
-	next := []Match{}
-	for i := 0; i < len(matches)/2; i++ {
-		next = append(next, Match{
-			ID:   i + 1,
-			Name: fmt.Sprintf("Winner of Match %d & %d", matches[i*2].ID, matches[i*2+1].ID),
-		})
+func GenerateBracket(w http.ResponseWriter, r *http.Request) {
+	dbConn := db.InitDB()
+
+	err := r.ParseForm()
+	if err != nil {
+		log.Printf("Failed read request body: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	return next
+
+	numEntrantsStr := r.FormValue("num_entrants")
+	tournamentIDStr := r.FormValue("tournament_id")
+	tournamentID, err := strconv.Atoi(tournamentIDStr)
+	if err != nil {
+		log.Printf("tournamentID invalid type: %v", err)
+		http.Error(w, "tournamentID is an invalid type", http.StatusBadRequest)
+	}
+	numEntrants, err := strconv.Atoi(numEntrantsStr)
+
+	matchService := match.NewMatchService(repositories.NewEntrantRepository(dbConn), repositories.NewTournamentRepository(dbConn), repositories.NewMatchRepository(dbConn))
+
+	err, matches := matchService.CreateMatches(numEntrants, tournamentID)
+	if err != nil {
+		log.Printf("Failed to create matches: %v", err)
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+	}
+
+	log.Println(matches)
 }
 
 func numMatchesRound1(numEntrants int) int {

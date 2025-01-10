@@ -36,14 +36,12 @@ func CreateTournament(w http.ResponseWriter, r *http.Request) {
 
 	tournamentName := r.FormValue("tournament_name")
 
-	tournamentService := tournament.NewBracketService(repositories.NewEntrantRepository(dbConn), repositories.NewTournamentRepository(dbConn))
+	tournamentService := tournament.NewTournamentService(repositories.NewEntrantRepository(dbConn), repositories.NewTournamentRepository(dbConn))
 	err, tournamentId := tournamentService.GenerateTournament(tournamentName)
 	if err != nil {
 		log.Printf("Failed to create tournament: %v", err)
 		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
 	}
-	tournamentService.CreateEntrant("Test Entrant1")
-	tournamentService.CreateEntrant("Test Entrant2")
 
 	http.Redirect(w, r, "/tournament/"+strconv.Itoa(tournamentId), http.StatusSeeOther)
 }
